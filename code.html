@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Toque na Rosa</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap');
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffe6e6, #fff0f0);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      color: #222;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.8rem;
+      color: #b30000;
+      animation: slowBlink 3s ease-in-out infinite;
+      margin-bottom: 2rem;
+      user-select: none;
+      text-align: center;
+      text-shadow: 0 0 6px rgba(179, 0, 0, 0.7);
+    }
+
+    @keyframes slowBlink {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .container {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      cursor: pointer;
+      perspective: 600px;
+    }
+
+    /* Rose stem and leaves */
+    .stem {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 80px;
+      background: linear-gradient(180deg, #2e7d32, #145214);
+      border-radius: 3px;
+      box-shadow: inset 0 2px 4px #4caf50;
+      z-index: 1;
+    }
+
+    .leaf {
+      position: absolute;
+      width: 30px;
+      height: 18px;
+      background: linear-gradient(135deg, #4caf50, #2e7d32);
+      border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+      box-shadow: inset 2px 2px 6px rgba(0,0,0,0.15);
+      transform-origin: center;
+      z-index: 1;
+    }
+
+    .leaf.left {
+      left: 10px;
+      bottom: 50px;
+      transform: rotate(-25deg);
+    }
+
+    .leaf.right {
+      right: 10px;
+      bottom: 50px;
+      transform: rotate(25deg);
+    }
+
+    /* Flower container for front/back petals */
+    .flower {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto;
+      transform-style: preserve-3d;
+      transition: transform 1.2s ease;
+      z-index: 10;
+    }
+
+    /* Closed petals - overlapping circles in red shades */
+    .petal {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at center, #c00000, #700000);
+      border-radius: 50% 60% 50% 60% / 75% 70% 30% 40%;
+      box-shadow: 0 0 12px rgba(200, 0, 0, 0.7);
+      top: 40px;
+      left: 40px;
+      opacity: 1;
+      transition: transform 1.2s ease, opacity 1.2s ease;
+      transform-origin: center bottom;
+    }
+
+    /* Individual petals positioned around center */
+    .petal1 { transform: rotate(0deg) translate(0, -25px) rotate(0deg); }
+    .petal2 { transform: rotate(45deg) translate(0, -25px) rotate(-45deg); }
+    .petal3 { transform: rotate(90deg) translate(0, -25px) rotate(-90deg); }
+    .petal4 { transform: rotate(135deg) translate(0, -25px) rotate(-135deg); }
+    .petal5 { transform: rotate(180deg) translate(0, -25px) rotate(-180deg); }
+    .petal6 { transform: rotate(225deg) translate(0, -25px) rotate(-225deg); }
+    .petal7 { transform: rotate(270deg) translate(0, -25px) rotate(-270deg); }
+    .petal8 { transform: rotate(315deg) translate(0, -25px) rotate(-315deg); }
+
+    /* Opened petals - expand */
+    .open .petal1 { transform: rotate(0deg) translate(0, -75px) rotate(0deg); opacity: 0.9; }
+    .open .petal2 { transform: rotate(45deg) translate(0, -75px) rotate(-45deg); opacity: 0.9; }
+    .open .petal3 { transform: rotate(90deg) translate(0, -75px) rotate(-90deg); opacity: 0.9; }
+    .open .petal4 { transform: rotate(135deg) translate(0, -75px) rotate(-135deg); opacity: 0.9; }
+    .open .petal5 { transform: rotate(180deg) translate(0, -75px) rotate(-180deg); opacity: 0.9; }
+    .open .petal6 { transform: rotate(225deg) translate(0, -75px) rotate(-225deg); opacity: 0.9; }
+    .open .petal7 { transform: rotate(270deg) translate(0, -75px) rotate(-270deg); opacity: 0.9; }
+    .open .petal8 { transform: rotate(315deg) translate(0, -75px) rotate(-315deg); opacity: 0.9; }
+
+    /* Center of the flower */
+    .center {
+      position: absolute;
+      top: 60px;
+      left: 60px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, #7a0000, #3a0000);
+      box-shadow: 0 0 15px 3px rgba(180, 0, 0, 0.9);
+      transition: background 1.2s ease;
+      z-index: 20;
+    }
+
+    /* Hidden message revealed on open */
+    .message {
+      position: absolute;
+      top: -60px;
+      width: 300px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #900;
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.4rem;
+      padding: 15px 20px;
+      border-radius: 12px;
+      background: rgba(255, 230, 230, 0.95);
+      box-shadow: 0 0 15px rgba(179, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      user-select: none;
+      transition: opacity 1s ease 1s;
+      text-align: center;
+      line-height: 1.3;
+      font-weight: 600;
+      font-style: italic;
+    }
+
+    .open .message {
+      opacity: 1;
+    }
+
+    /* Add subtle shine on petals when opened */
+    .open .petal {
+      box-shadow: 0 0 15px 4px rgba(255, 100, 100, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <h1>Toque na rosa, princesa.</h1>
+  <div class="container" id="rose">
+    <div class="stem"></div>
+    <div class="leaf left"></div>
+    <div class="leaf right"></div>
+    <div class="flower" id="flower">
+      <div class="petal petal1"></div>
+      <div class="petal petal2"></div>
+      <div class="petal petal3"></div>
+      <div class="petal petal4"></div>
+      <div class="petal petal5"></div>
+      <div class="petal petal6"></div>
+      <div class="petal petal7"></div>
+      <div class="petal petal8"></div>
+      <div class="center"></div>
+      <div class="message">Eu te amo.<br>Achou que eu não iria dizer dessa vez?</div>
+    </div>
+  </div>
+
+  <script>
+    const rose = document.getElementById('rose');
+    const flower = document.getElementById('flower');
+
+    rose.addEventListener('click', () => {
+      flower.classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
+
